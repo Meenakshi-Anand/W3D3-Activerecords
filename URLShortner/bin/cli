@@ -1,0 +1,34 @@
+#!/usr/bin/env ruby
+
+
+class CLI
+  def prompt
+    puts "Input your email"
+    email = gets.chomp 
+    user = User.find_by(email: email)
+    puts "What do you want to do?\n
+          0. Create shortened URL\n
+          1. Visit shortened URL"
+    temp = gets.chomp.to_i 
+
+    if temp == 0
+      puts "Type in your long url"
+      long = gets.chomp
+      short = ShortenedURL.create_short_url(user, long)
+      puts "Short url is: #{short.short_url}"
+      puts "Goodbye!"
+    else
+      puts "Type in the shortened URL"
+      short = ShortenedURL.find_by(short_url: gets.chomp)
+      Visit.record_visit!(user, short)
+      puts "Launching #{short.long_url} ..."
+      puts "Goodbye!"
+    end
+  end
+end
+
+
+CLI.new.prompt
+
+
+
